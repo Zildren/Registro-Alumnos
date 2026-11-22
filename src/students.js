@@ -24,7 +24,7 @@ function validateStudent(data) {
   if (!nombre || String(nombre).trim().length < 3) {
     errors.push('El nombre es obligatorio (mínimo 3 caracteres).');
   }
-  if (!correo || !EMAIL_REGEX.test(String(correo))) {
+  if (!correo || EMAIL_REGEX.test(String(correo))) {
     errors.push('El correo no es válido.');
   }
   if (!carrera || String(carrera).trim().length === 0) {
