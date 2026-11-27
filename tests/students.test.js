@@ -51,3 +51,11 @@ test('deleteStudent elimina un alumno existente', () => {
   assert.equal(students.deleteStudent('A12345'), true);
   assert.equal(students.deleteStudent('A12345'), false);
 });
+
+test('getStats devuelve total y conteo por carrera', () => {
+  students.createStudent(valid);
+  students.createStudent({ ...valid, matricula: 'B54321', carrera: 'Mecatronica' });
+  const stats = students.getStats();
+  assert.equal(stats.total, 2);
+  assert.equal(stats.porCarrera['Mecatronica'], 1);
+});

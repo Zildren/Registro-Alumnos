@@ -57,3 +57,14 @@ test('DELETE /api/alumnos/:matricula elimina (204)', async () => {
   const res = await request(app).delete('/api/alumnos/A12345');
   assert.equal(res.status, 204);
 });
+
+test('GET /api/estadisticas cuenta alumnos por carrera', async () => {
+  await request(app).post('/api/alumnos').send(valid);
+  await request(app)
+    .post('/api/alumnos')
+    .send({ ...valid, matricula: 'B54321', correo: 'luis@correo.com' });
+  const res = await request(app).get('/api/estadisticas');
+  assert.equal(res.status, 200);
+  assert.equal(res.body.total, 2);
+  assert.equal(res.body.porCarrera['Ingenieria en Software'], 2);
+});
