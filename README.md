@@ -54,3 +54,16 @@ npm test         # ejecutar pruebas
 ## Integración continua
 Cada `push` o `pull request` a `main` ejecuta GitHub Actions: instala dependencias (`npm ci`),
 verifica la sintaxis (`npm run lint`) y corre las pruebas (`npm test`) en Node 20 y 22.
+
+## Despliegue continuo (CD)
+- **Plataforma:** Render (Web Service, plan gratuito).
+- **Configuración:** `render.yaml` y `.github/workflows/cd.yml`.
+- **Flujo:** `push` a `main` → CI (pruebas) → si pasa, CD dispara el despliegue en Render →
+  se consulta `/api/health` hasta confirmar que la versión nueva está en línea.
+- **También se despliega** al publicar un *release* en GitHub o manualmente (workflow_dispatch).
+- **Secretos y variables** (Settings → Secrets and variables → Actions):
+  - `RENDER_DEPLOY_HOOK_URL` (secreto): URL del Deploy Hook del servicio en Render.
+  - `APP_URL` (variable): URL pública de la aplicación, sin diagonal final.
+- **Variables en Render:** `NODE_VERSION=22`, `NODE_ENV=production` (el puerto lo asigna Render con `PORT`).
+
+> Nota: los datos se guardan en memoria; se reinician cuando el servicio se reinicia o se vuelve a desplegar.
