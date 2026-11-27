@@ -1,6 +1,6 @@
 {
   "name": "registro-alumnos",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Sistema de registro de alumnos con Node.js y Express",
   "main": "src/server.js",
   "scripts": {
