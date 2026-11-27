@@ -3,13 +3,14 @@
 const express = require('express');
 const path = require('path');
 const students = require('./students');
+const { version } = require('../package.json');
 
 const app = express();
 app.use(express.json());
 app.use(express.static(path.join(__dirname, '..', 'public')));
 
 app.get('/api/health', (req, res) => {
-  res.json({ status: 'ok', uptime: process.uptime() });
+  res.json({ status: 'ok', version, uptime: process.uptime() });
 });
 
 app.get('/api/alumnos', (req, res) => {

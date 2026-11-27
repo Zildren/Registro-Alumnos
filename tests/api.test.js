@@ -19,6 +19,7 @@ test('GET /api/health responde ok', async () => {
   const res = await request(app).get('/api/health');
   assert.equal(res.status, 200);
   assert.equal(res.body.status, 'ok');
+  assert.match(res.body.version, /^\d+\.\d+\.\d+$/);
 });
 
 test('POST /api/alumnos crea un alumno (201)', async () => {
