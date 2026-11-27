@@ -1,0 +1,16 @@
+# Configuración del servicio en Render (infraestructura como código)
+services:
+  - type: web
+    name: registro-alumnos
+    runtime: node
+    plan: free
+    buildCommand: npm ci
+    startCommand: npm start
+    healthCheckPath: /api/health
+    # El despliegue lo dispara GitHub Actions (cd.yml) solo cuando el CI pasa
+    autoDeployTrigger: "off"
+    envVars:
+      - key: NODE_VERSION
+        value: "22"
+      - key: NODE_ENV
+        value: production

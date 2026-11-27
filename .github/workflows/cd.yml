@@ -1,0 +1,51 @@
+name: CD
+
+# Se ejecuta cuando el CI termina bien en main, al publicar una versión (release)
+# o manualmente desde la pestaña Actions.
+on:
+  workflow_run:
+    workflows: ["CI"]
+    types: [completed]
+    branches: [main]
+  release:
+    types: [published]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    # Si viene del CI, solo despliega cuando el CI fue exitoso
+    if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    env:
+      RENDER_DEPLOY_HOOK_URL: ${{ secrets.RENDER_DEPLOY_HOOK_URL }}
+      APP_URL: ${{ vars.APP_URL }}
+
+    steps:
+      - name: Descargar el codigo de la version a desplegar
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
+
+      - name: Validar configuracion de despliegue
+        run: |
+          if [ -z "$RENDER_DEPLOY_HOOK_URL" ]; then echo "Falta el secreto RENDER_DEPLOY_HOOK_URL"; exit 1; fi
+          if [ -z "$APP_URL" ]; then echo "Falta la variable APP_URL"; exit 1; fi
+
+      - name: Disparar despliegue en Render
+        run: curl -fsS -X POST "$RENDER_DEPLOY_HOOK_URL"
+
+      - name: Verificar que la nueva version quedo publicada
+        run: |
+          EXPECTED=$(node -p "require('./package.json').version")
+          echo "Version esperada: $EXPECTED"
+          for i in $(seq 1 30); do
+            RESPONSE=$(curl -fsS --max-time 20 "$APP_URL/api/health" || true)
+            echo "Intento $i: $RESPONSE"
+            if echo "$RESPONSE" | grep -q "\"version\":\"$EXPECTED\""; then
+              echo "Despliegue verificado: version $EXPECTED en linea"
+              exit 0
+            fi
+            sleep 10
+          done
+          echo "La version $EXPECTED no aparecio a tiempo"
+          exit 1
