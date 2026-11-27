@@ -13,6 +13,10 @@ app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', version, uptime: process.uptime() });
 });
 
+app.get('/api/estadisticas', (req, res) => {
+  res.json(students.getStats());
+});
+
 app.get('/api/alumnos', (req, res) => {
   res.json(students.listStudents(req.query.q));
 });

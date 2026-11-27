@@ -14,3 +14,5 @@ table { width: 100%; border-collapse: collapse; font-size: 14px; }
 th, td { text-align: left; padding: 8px; border-bottom: 1px solid #e5e7eb; }
 #msg { min-height: 1.2em; font-size: 14px; }
 .error { color: #b91c1c; } .ok { color: #15803d; }
+
+.stats { font-size: 14px; color: #475569; margin: 0 0 10px; }

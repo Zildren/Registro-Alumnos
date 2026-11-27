@@ -44,6 +44,14 @@ function listStudents(search = '') {
   );
 }
 
+function getStats() {
+  const porCarrera = {};
+  for (const s of students) {
+    porCarrera[s.carrera] = (porCarrera[s.carrera] || 0) + 1;
+  }
+  return { total: students.length, porCarrera };
+}
+
 function getStudent(matricula) {
   return students.find((s) => s.matricula === matricula) || null;
 }
@@ -88,6 +96,7 @@ function deleteStudent(matricula) {
 module.exports = {
   validateStudent,
   listStudents,
+  getStats,
   getStudent,
   createStudent,
   updateStudent,

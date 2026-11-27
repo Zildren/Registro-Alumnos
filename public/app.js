@@ -8,7 +8,18 @@ function showMessage(text, type) {
   msg.className = type;
 }
 
+async function loadStats() {
+  const res = await fetch('/api/estadisticas');
+  const stats = await res.json();
+  const detalle = Object.entries(stats.porCarrera)
+    .map(([carrera, n]) => carrera + ': ' + n)
+    .join(' | ');
+  document.getElementById('stats').textContent =
+    'Total de alumnos: ' + stats.total + (detalle ? '  (' + detalle + ')' : '');
+}
+
 async function loadStudents() {
+  loadStats();
   const res = await fetch('/api/alumnos?q=' + encodeURIComponent(search.value));
   const data = await res.json();
   rows.innerHTML = '';
